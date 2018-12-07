@@ -1,6 +1,7 @@
 package com.limaila.support.global.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.limaila.support.global.gzip.annotation.GzipCompress;
 import com.limaila.support.global.handler.annotation.GlobalHandler;
 import com.limaila.support.global.handler.response.GlobalResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -26,22 +27,39 @@ public class GlobalResponseBodyAdvice implements ResponseBodyAdvice {
 
     private static final ThreadLocal<Long> costTimeLocal = new ThreadLocal<Long>();
 
+    public static final ThreadLocal<Boolean> isGzipCompressLocal = new ThreadLocal<Boolean>();
+
     public boolean supports(MethodParameter returnType, Class converterType) {
-        boolean flag = false;
+        boolean isGlobalHandlerResponseBody = false;
         GlobalHandler g1 = returnType.getMethodAnnotation(GlobalHandler.class);
         if (g1 != null) {
-            flag = g1.handler();
+            isGlobalHandlerResponseBody = g1.handler();
         } else {
             g1 = AnnotationUtils.findAnnotation(returnType.getContainingClass(), GlobalHandler.class);
             if (g1 != null) {
-                flag = g1.handler();
+                isGlobalHandlerResponseBody = g1.handler();
             }
         }
-        if (flag) {
+
+        boolean isGzipCompress = false;
+        GzipCompress gc = returnType.getMethodAnnotation(GzipCompress.class);
+        if (gc != null) {
+            isGzipCompress = gc.compress();
+        } else {
+            gc = AnnotationUtils.findAnnotation(returnType.getContainingClass(), GzipCompress.class);
+            if (gc != null) {
+                isGzipCompress = gc.compress();
+            }
+        }
+        isGzipCompressLocal.set(isGzipCompress);
+        if (isGlobalHandlerResponseBody) {
             costTimeLocal.set(System.currentTimeMillis());
         }
-        log.debug("[GlobalResponseBodyHandler]=========={} = {}", "supports", flag);
-        return flag;
+        log.debug("[GlobalResponseBodyHandler]=========={} = {}, {} = {}",
+                "isGlobalHandlerResponseBody", isGlobalHandlerResponseBody,
+                "isGzipCompress", isGzipCompress
+        );
+        return isGlobalHandlerResponseBody;
 
     }
 
