@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.zip.GZIPInputStream;
 
 /**
  *  从请求体中获取参数请求包装类：<br>
@@ -22,7 +23,36 @@ public class BodyHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
     public BodyHttpServletRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
-        requestBody = StreamUtils.copyToByteArray(request.getInputStream());
+        String contentEncoding = request.getHeader("Content-Encoding");
+        // 如果对内容进行了压缩，则解压
+        if (null != contentEncoding && contentEncoding.indexOf("gzip") != -1) {
+            final GZIPInputStream gzipInputStream = new GZIPInputStream(request.getInputStream());
+            ServletInputStream newStream = new ServletInputStream() {
+                @Override
+                public int read() throws IOException {
+                    return gzipInputStream.read();
+                }
+
+                @Override
+                public boolean isFinished() {
+                    return false;
+                }
+
+                @Override
+                public boolean isReady() {
+                    return false;
+                }
+
+                @Override
+                public void setReadListener(ReadListener arg0) {
+                    // TODO Auto-generated method stub
+
+                }
+            };
+            requestBody = StreamUtils.copyToByteArray(newStream);
+        } else {
+            requestBody = StreamUtils.copyToByteArray(request.getInputStream());
+        }
     }
 
     @Override
