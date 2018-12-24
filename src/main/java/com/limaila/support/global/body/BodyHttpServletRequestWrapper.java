@@ -1,4 +1,4 @@
-package com.limaila.support.global.bodyread;
+package com.limaila.support.global.body;
 
 import org.springframework.util.StreamUtils;
 
@@ -17,10 +17,10 @@ import java.io.InputStreamReader;
  * <p>
  * <p>
  **/
-public class BodyReaderHttpServletRequestWrapper extends HttpServletRequestWrapper {
+public class BodyHttpServletRequestWrapper extends HttpServletRequestWrapper {
     private byte[] requestBody = null;//用于将流保存下来
 
-    public BodyReaderHttpServletRequestWrapper(HttpServletRequest request) throws IOException {
+    public BodyHttpServletRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
         requestBody = StreamUtils.copyToByteArray(request.getInputStream());
     }
