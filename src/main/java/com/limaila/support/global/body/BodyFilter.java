@@ -1,5 +1,6 @@
 package com.limaila.support.global.body;
 
+import com.limaila.support.global.LocalHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.ssi.ByteArrayServletOutputStream;
 import org.springframework.boot.SpringBootConfiguration;
@@ -41,7 +42,7 @@ public class BodyFilter extends OncePerRequestFilter {
                 baos = ((BodyHttpServletResponseWrapper) responseWrapper).getByteArrOutputStream();
                 ServletOutputStream os = httpServletResponse.getOutputStream();
                 byte[] bytes = baos.toByteArray();
-                if (StringUtils.pathEquals(compress, "true")) {
+                if (StringUtils.pathEquals(compress, "true") || (LocalHolder.GZIPCOMPRESSLOCAL.get() != null && LocalHolder.GZIPCOMPRESSLOCAL.get())) {
                     log.debug("BodyFilter 压缩前大小：" + bytes.length);
                     log.debug("BodyFilter 压缩前数据：" + new String(bytes,"utf-8"));
                     //GZIP压缩
@@ -50,6 +51,7 @@ public class BodyFilter extends OncePerRequestFilter {
                     gos.close();
                     httpServletResponse.setHeader("Content-Encoding", "gzip"); // 设置响应头信息
                     os.write(bytes);
+                    LocalHolder.GZIPCOMPRESSLOCAL.remove();
                     log.debug("BodyFilter 压缩后大小：" + bytes.length);
                 } else {
                     os.write(bytes);
