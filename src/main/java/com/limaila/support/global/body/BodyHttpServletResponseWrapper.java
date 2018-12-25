@@ -8,6 +8,13 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * 包装HttpServletResponse类
+ * 增加获取返回信息的数据
+ * Author: huangxincheng
+ * <p>
+ * <p>
+ */
 public class BodyHttpServletResponseWrapper extends HttpServletResponseWrapper {
 
     private ByteArrayServletOutputStream byteArrOutputStream = new ByteArrayServletOutputStream();
