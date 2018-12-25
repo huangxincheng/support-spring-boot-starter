@@ -1,8 +1,10 @@
 package com.limaila.support.global.body;
 
 import com.limaila.support.global.LocalHolder;
+import com.limaila.support.global.gzip.GzipUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.ssi.ByteArrayServletOutputStream;
+import org.apache.commons.io.IOUtils;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
@@ -43,31 +45,16 @@ public class BodyFilter extends OncePerRequestFilter {
                 ServletOutputStream os = httpServletResponse.getOutputStream();
                 byte[] bytes = baos.toByteArray();
                 if ("true".equals(compress) || (LocalHolder.GZIPCOMPRESSLOCAL.get() != null && LocalHolder.GZIPCOMPRESSLOCAL.get())) {
-                    ByteArrayOutputStream aos = null;
-                    GZIPOutputStream gos = null;
-                    try {
-                        log.debug("BodyFilter 压缩前大小：" + bytes.length);
-                        log.debug("BodyFilter 压缩前数据：" + new String(bytes,"utf-8"));
-                        //GZIP压缩
-                        aos = new ByteArrayOutputStream(1024);
-                        gos = new GZIPOutputStream(aos);
-                        gos.write(bytes);
-                        httpServletResponse.setHeader("Content-Encoding", "gzip"); // 设置响应头信息
-                        os.write(aos.toByteArray());
-                        LocalHolder.GZIPCOMPRESSLOCAL.remove();
-                        log.debug("BodyFilter 压缩后大小：" + bytes.length);
-                    } finally {
-                        gos.close();
-                        aos.close();
-                    }
+                    byte[] bs = GzipUtil.compress(bytes);
+                    httpServletResponse.setHeader("Content-Encoding", "gzip"); // 设置响应头信息
+                    os.write(bs);
                 } else {
                     os.write(bytes);
                 }
                 os.flush();
             } finally {
-                if (baos != null) {
-                    baos.close();
-                }
+                LocalHolder.GZIPCOMPRESSLOCAL.remove();
+                IOUtils.closeQuietly(baos);
             }
         }
     }
