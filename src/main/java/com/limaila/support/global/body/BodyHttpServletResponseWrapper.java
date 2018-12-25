@@ -18,6 +18,7 @@ public class BodyHttpServletResponseWrapper extends HttpServletResponseWrapper {
 
     public PrintWriter getWriter() throws IOException {
         return new PrintWriter(this.byteArrOutputStream);
+//        return super.getWriter();
     }
 
     public ServletOutputStream getOutputStream() throws IOException {
