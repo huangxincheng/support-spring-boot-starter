@@ -19,11 +19,11 @@ public class GzipUtil {
         byte[] bs = null;
         try {
             log.debug("BodyFilter 压缩前大小：" + bytes.length);
-            log.debug("BodyFilter 压缩前数据：" + new String(bytes, "utf-8"));
-            //GZIP压缩
+//            log.debug("BodyFilter 压缩前数据：" + new String(bytes, "utf-8"));
+//            GZIP压缩
             gos = new GZIPOutputStream(aos);
-            gos.flush();
             gos.write(bytes);
+            gos.flush();
             log.debug("BodyFilter 压缩后大小：" + aos.toByteArray().length);
             bs = aos.toByteArray();
         } catch (UnsupportedEncodingException e) {

@@ -42,7 +42,7 @@ public class BodyFilter extends OncePerRequestFilter {
             //没有提交
             try {
                 baos = ((BodyHttpServletResponseWrapper) responseWrapper).getByteArrOutputStream();
-                ServletOutputStream os = httpServletResponse.getOutputStream();
+                ServletOutputStream os = responseWrapper.getOutputStream();
                 byte[] bytes = baos.toByteArray();
                 if ("true".equals(compress) || (LocalHolder.GZIPCOMPRESSLOCAL.get() != null && LocalHolder.GZIPCOMPRESSLOCAL.get())) {
                     byte[] bs = GzipUtil.compress(bytes);
