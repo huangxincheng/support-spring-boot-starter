@@ -31,5 +31,4 @@ public class BodyHttpServletResponseWrapper extends HttpServletResponseWrapper {
     public void setByteArrOutputStream(ByteArrayServletOutputStream byteArrOutputStream) {
         this.byteArrOutputStream = byteArrOutputStream;
     }
-
 }
