@@ -1,5 +1,6 @@
 package com.limaila.support.global.body;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.util.StreamUtils;
 
 import javax.servlet.ReadListener;
@@ -49,6 +50,7 @@ public class BodyHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
                 }
             };
+            gzipInputStream.close();
             requestBody = StreamUtils.copyToByteArray(newStream);
         } else {
             requestBody = StreamUtils.copyToByteArray(request.getInputStream());

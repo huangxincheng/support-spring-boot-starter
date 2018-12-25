@@ -32,7 +32,7 @@ public class BodyFilter extends OncePerRequestFilter {
         // 包装httpServletResponse 增加获取返回结果信息
         ServletResponse responseWrapper = new BodyHttpServletResponseWrapper(httpServletResponse);
         log.debug("BodyFilter doFilterInternal wrapper request and response");
-        filterChain.doFilter(requestWrapper, responseWrapper);
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
         log.debug("BodyFilter doFilterInternal after");
         String compress = requestWrapper.getParameter("compress");
         if (!httpServletResponse.isCommitted()) {
