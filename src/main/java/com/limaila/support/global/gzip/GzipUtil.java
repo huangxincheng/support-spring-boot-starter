@@ -16,6 +16,7 @@ public class GzipUtil {
     public static final byte[] compress(byte[] bytes) {
         ByteArrayOutputStream aos = new ByteArrayOutputStream(1024);
         GZIPOutputStream gos = null;
+        byte[] bs = null;
         try {
             log.debug("BodyFilter 压缩前大小：" + bytes.length);
             log.debug("BodyFilter 压缩前数据：" + new String(bytes, "utf-8"));
@@ -24,6 +25,7 @@ public class GzipUtil {
             gos.flush();
             gos.write(bytes);
             log.debug("BodyFilter 压缩后大小：" + aos.toByteArray().length);
+            bs = aos.toByteArray();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -31,7 +33,7 @@ public class GzipUtil {
         } finally {
             IOUtils.closeQuietly(gos, aos);
         }
-        return aos.toByteArray();
+        return bs;
     }
 
     public static final byte[] uncompress(byte[] bs) {
