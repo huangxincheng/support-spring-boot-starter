@@ -47,7 +47,10 @@ public class BodyFilter extends OncePerRequestFilter {
                 if ("true".equals(compress) || (LocalHolder.GZIPCOMPRESSLOCAL.get() != null && LocalHolder.GZIPCOMPRESSLOCAL.get())) {
                     byte[] bs = GzipUtil.compress(bytes);
                     // 设置响应头信息
-//                    httpServletResponse.setHeader("Content-Encoding", "gzip");
+                    String AcceptEncoding = httpServletRequest.getHeader("Accept-Encoding");
+                    if (AcceptEncoding != null && AcceptEncoding.indexOf("gzip") != -1) {
+                        httpServletResponse.setHeader("Content-Encoding", "gzip");
+                    }
                     httpServletResponse.setContentLength(bs.length);
                     os.write(bs);
                 } else {
