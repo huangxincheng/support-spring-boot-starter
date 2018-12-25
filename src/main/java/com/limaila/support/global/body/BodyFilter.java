@@ -32,7 +32,7 @@ public class BodyFilter extends OncePerRequestFilter {
         // 包装httpServletResponse 增加获取返回结果信息
         ServletResponse responseWrapper = new BodyHttpServletResponseWrapper(httpServletResponse);
         log.debug("BodyFilter doFilterInternal wrapper request and response");
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
+        filterChain.doFilter(requestWrapper, responseWrapper);
         log.debug("BodyFilter doFilterInternal after");
         String compress = requestWrapper.getParameter("compress");
         if (!httpServletResponse.isCommitted()) {
@@ -42,17 +42,24 @@ public class BodyFilter extends OncePerRequestFilter {
                 baos = ((BodyHttpServletResponseWrapper) responseWrapper).getByteArrOutputStream();
                 ServletOutputStream os = httpServletResponse.getOutputStream();
                 byte[] bytes = baos.toByteArray();
-                if (StringUtils.pathEquals(compress, "true") || (LocalHolder.GZIPCOMPRESSLOCAL.get() != null && LocalHolder.GZIPCOMPRESSLOCAL.get())) {
-                    log.debug("BodyFilter 压缩前大小：" + bytes.length);
-                    log.debug("BodyFilter 压缩前数据：" + new String(bytes,"utf-8"));
-                    //GZIP压缩
-                    GZIPOutputStream gos = new GZIPOutputStream(new ByteArrayOutputStream(1024));
-                    gos.write(bytes);
-                    gos.close();
-                    httpServletResponse.setHeader("Content-Encoding", "gzip"); // 设置响应头信息
-                    os.write(bytes);
-                    LocalHolder.GZIPCOMPRESSLOCAL.remove();
-                    log.debug("BodyFilter 压缩后大小：" + bytes.length);
+                if ("true".equals(compress) || (LocalHolder.GZIPCOMPRESSLOCAL.get() != null && LocalHolder.GZIPCOMPRESSLOCAL.get())) {
+                    ByteArrayOutputStream aos = null;
+                    GZIPOutputStream gos = null;
+                    try {
+                        log.debug("BodyFilter 压缩前大小：" + bytes.length);
+                        log.debug("BodyFilter 压缩前数据：" + new String(bytes,"utf-8"));
+                        //GZIP压缩
+                        aos = new ByteArrayOutputStream(1024);
+                        gos = new GZIPOutputStream(aos);
+                        gos.write(bytes);
+                        httpServletResponse.setHeader("Content-Encoding", "gzip"); // 设置响应头信息
+                        os.write(aos.toByteArray());
+                        LocalHolder.GZIPCOMPRESSLOCAL.remove();
+                        log.debug("BodyFilter 压缩后大小：" + bytes.length);
+                    } finally {
+                        gos.close();
+                        aos.close();
+                    }
                 } else {
                     os.write(bytes);
                 }
