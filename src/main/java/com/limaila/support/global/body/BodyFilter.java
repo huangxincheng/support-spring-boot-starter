@@ -34,7 +34,7 @@ public class BodyFilter extends OncePerRequestFilter {
         // 包装httpServletResponse 增加获取返回结果信息
         ServletResponse responseWrapper = new BodyHttpServletResponseWrapper(httpServletResponse);
         log.debug("BodyFilter doFilterInternal wrapper request and response");
-        filterChain.doFilter(requestWrapper, responseWrapper);
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
         log.debug("BodyFilter doFilterInternal after");
         String compress = requestWrapper.getParameter("compress");
         if (!httpServletResponse.isCommitted()) {
@@ -42,7 +42,7 @@ public class BodyFilter extends OncePerRequestFilter {
             //没有提交
             try {
                 baos = ((BodyHttpServletResponseWrapper) responseWrapper).getByteArrOutputStream();
-                ServletOutputStream os = responseWrapper.getOutputStream();
+                ServletOutputStream os = httpServletResponse.getOutputStream();
                 byte[] bytes = baos.toByteArray();
                 if ("true".equals(compress) || (LocalHolder.GZIPCOMPRESSLOCAL.get() != null && LocalHolder.GZIPCOMPRESSLOCAL.get())) {
                     byte[] bs = GzipUtil.compress(bytes);
