@@ -1,22 +1,17 @@
 package com.limaila.support.global.body;
 
 import com.limaila.support.global.LocalHolder;
-import com.limaila.support.global.gzip.GzipUtil;
+import com.limaila.support.global.compress.utils.GzipUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.ssi.ByteArrayServletOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.util.StreamUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import sun.nio.ch.IOUtil;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * Author: huangxincheng

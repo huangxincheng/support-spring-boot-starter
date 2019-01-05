@@ -1,4 +1,4 @@
-package com.limaila.support.global.gzip.annotation;
+package com.limaila.support.global.compress.annotaions;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
