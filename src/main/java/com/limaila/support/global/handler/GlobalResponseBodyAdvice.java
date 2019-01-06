@@ -2,7 +2,7 @@ package com.limaila.support.global.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.limaila.support.global.LocalHolder;
-import com.limaila.support.global.compress.annotaions.GzipCompress;
+import com.limaila.support.global.compress.annotaions.DataCompress;
 import com.limaila.support.global.handler.annotation.GlobalHandler;
 import com.limaila.support.global.handler.response.GlobalResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -41,11 +41,11 @@ public class GlobalResponseBodyAdvice implements ResponseBodyAdvice {
         }
 
         boolean isGzipCompress = false;
-        GzipCompress gc = returnType.getMethodAnnotation(GzipCompress.class);
+        DataCompress gc = returnType.getMethodAnnotation(DataCompress.class);
         if (gc != null) {
             isGzipCompress = gc.compress();
         } else {
-            gc = AnnotationUtils.findAnnotation(returnType.getContainingClass(), GzipCompress.class);
+            gc = AnnotationUtils.findAnnotation(returnType.getContainingClass(), DataCompress.class);
             if (gc != null) {
                 isGzipCompress = gc.compress();
             }
