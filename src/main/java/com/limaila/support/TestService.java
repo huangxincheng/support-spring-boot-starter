@@ -2,6 +2,7 @@ package com.limaila.support;
 
 import com.limaila.support.global.log.annotation.StatLog;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,6 +20,13 @@ public class TestService {
 //        this.say();
         // 必须@EnableAspectJAutoProxy exposeProxy=true
         ((TestService) AopContext.currentProxy()).say();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+//                如果异步的话会报错
+//                ((TestService) AopContext.currentProxy()).say();
+            }
+        }).start();
         return str;
     }
 
