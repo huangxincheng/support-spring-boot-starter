@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  **/
 @Target(value = {ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface GzipCompress {
+public @interface DataCompress {
 
     /**
      * 是否压缩数据 默认是
