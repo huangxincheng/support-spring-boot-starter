@@ -7,8 +7,12 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Author: huangxincheng
@@ -17,6 +21,7 @@ import java.lang.reflect.Method;
  **/
 @Aspect
 @Slf4j
+@Component
 public class StatLogAspect {
 
     @Around(value = "@annotation(statLog)")
@@ -24,9 +29,26 @@ public class StatLogAspect {
         Object result;
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         Method method = methodSignature.getMethod();
-        log.info("statLog | {} | {} | {} | {} | {}", method.getDeclaringClass().getName(), method.getName() , method.getParameters().toString(), "N/A", "before");
+        String argsNameValue = this.getArgsNameValue(methodSignature.getParameterNames(), point.getArgs());
+        log.info("| statLog | {} | {} | {} | {} | {}", method.getDeclaringClass().getName(), method.getName() , argsNameValue, "N/A", "before");
         result = point.proceed();
-        log.info("statLog | {} | {} | {} | {} | {}", method.getDeclaringClass().getName(), method.getName() , method.getParameters().toString(), JSON.toJSONString(result), "after");
+        log.info("| statLog | {} | {} | {} | {} | {}", method.getDeclaringClass().getName(), method.getName() , argsNameValue, JSON.toJSONString(result), "after");
         return result;
+    }
+
+    /**
+     * 获取参数名和值
+     * @param names names
+     * @param values values
+     * @return
+     */
+    private String getArgsNameValue(String[] names, Object[] values) {
+        StringBuilder builder = new StringBuilder();
+        if (names != null && names.length > 0) {
+            for (int i = 0; i < names.length; i++) {
+                builder.append(names[i] + "=" + JSON.toJSONString(values[i]) + ",");
+            }
+        }
+        return builder.toString();
     }
 }
