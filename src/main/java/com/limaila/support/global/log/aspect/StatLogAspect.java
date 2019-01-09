@@ -30,9 +30,10 @@ public class StatLogAspect {
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         Method method = methodSignature.getMethod();
         String argsNameValue = this.getArgsNameValue(methodSignature.getParameterNames(), point.getArgs());
-        log.info("| statLog | {} | {} | {} | {} | {}", method.getDeclaringClass().getName(), method.getName() , argsNameValue, "N/A", "before");
+        log.info("| statLog | class={} | method={} | params={} | returnValue={} | execType={} | execTimeMillis={}", method.getDeclaringClass().getName(), method.getName() , argsNameValue, "N/A", "before", -1);
+        long beforeTimeMillis = System.currentTimeMillis();
         result = point.proceed();
-        log.info("| statLog | {} | {} | {} | {} | {}", method.getDeclaringClass().getName(), method.getName() , argsNameValue, JSON.toJSONString(result), "after");
+        log.info("| statLog | class={} | method={} | params={} | returnValue={} | execType={} | execTimeMillis={}", method.getDeclaringClass().getName(), method.getName() , argsNameValue, JSON.toJSONString(result), "after", System.currentTimeMillis() - beforeTimeMillis);
         return result;
     }
 
