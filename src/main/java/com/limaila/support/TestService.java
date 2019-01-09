@@ -15,6 +15,15 @@ public class TestService {
     @StatLog
     public String sayHello(String str) {
         System.out.println("111");
+        this.say();
         return str;
+    }
+
+    /**
+     * 通过自调的是没经过aspect
+     */
+    @StatLog
+    public void say() {
+        System.out.println("121");
     }
 }
