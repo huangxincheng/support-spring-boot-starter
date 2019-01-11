@@ -24,6 +24,9 @@ import java.util.Map;
 @Component
 public class StatLogAspect {
 
+    /**
+     * @annotation 只能切割method
+     */
     @Around(value = "@annotation(statLog)")
     public Object around(ProceedingJoinPoint point, StatLog statLog) throws Throwable {
         Object result;
