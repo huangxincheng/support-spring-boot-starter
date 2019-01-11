@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * <p>
  * <p>
  **/
-@Target(value = {ElementType.METHOD})
+@Target(value = {ElementType.METHOD,ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface StatLog {
 
