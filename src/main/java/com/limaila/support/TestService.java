@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
  **/
 //TODO 测试代码以后可删
 @Service
+
 public class TestService {
 
     @StatLog
@@ -33,7 +34,6 @@ public class TestService {
     /**
      * 通过自调的是没经过aspect
      */
-    @StatLog
     public void say() {
         System.out.println("121");
     }
